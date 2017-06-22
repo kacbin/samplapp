@@ -1,0 +1,54 @@
+package com.cubic.service;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.cubic.vo.CustomerVO;
+
+public class CustomerMemoryDB {
+
+	private final static CustomerMemoryDB instance = new CustomerMemoryDB();
+
+	private Map<Long, CustomerVO> dbMap = new HashMap<Long, CustomerVO>();
+
+	private CustomerMemoryDB() {
+
+	}
+//singleton
+	public static CustomerMemoryDB get() {
+		return instance;
+	}
+
+	public CustomerVO addCustomer(final CustomerVO vo) {
+		vo.setPk(System.currentTimeMillis());
+		dbMap.put(vo.getPk(), vo);
+		return vo;
+
+	}
+
+	public CustomerVO updateCustomer(final CustomerVO vo) {
+		if (dbMap.containsKey(vo.getPk())) {
+			dbMap.put(vo.getPk(), vo);
+		} else {
+			throw new IllegalArgumentException("Record not found in database");
+		}
+		return vo;
+
+	}
+	
+	public CustomerVO getCustomer(final Long pk){
+		return dbMap.get(pk);
+		
+	}
+	public List<CustomerVO> getCustomers(){
+		return new ArrayList<CustomerVO>(dbMap.values());
+		
+	}
+	
+	public void removeCustomer(final Long pk){
+		dbMap.remove(pk);
+		
+	}
+}
